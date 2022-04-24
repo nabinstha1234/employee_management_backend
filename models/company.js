@@ -15,8 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         as: 'imagesFiles',
       })
       Company.belongsToMany(models.Employee, {
+        through: 'EmployeeCompany',
         foreignKey:"employee_id",
-        as: 'employees',
+        as: 'employee',
       })
     }
   }

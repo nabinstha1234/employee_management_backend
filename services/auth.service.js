@@ -73,7 +73,7 @@ const authService = () => {
       const password = args.password;
 
       const user = await userRepository.findOne({ email, selectPassword: true });
-
+      console.log(user,"i am users")
       if (!user) {
         throw new ValidationError({
           message: strings.validationError,

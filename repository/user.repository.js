@@ -109,10 +109,14 @@ const userRepository = () => {
     try {
       const selectPassword = args?.selectPassword;
       const _args = omit(args, ['selectPassword']);
-
+      console.log('_args', _args);
       let user;
       if (args?.selectPassword) {
-        user = await User.findOne(_args).select('+password');
+        user = await User.findOne({
+          where:{
+            email: args?.email,
+          }
+        })
       } else {
         user = await User.findOne(_args);
       }

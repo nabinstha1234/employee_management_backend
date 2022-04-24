@@ -2,6 +2,10 @@
 const {
   Model
 } = require('sequelize');
+// const bcrypt = require('bcryptjs'); 
+const hashService = require('../services/bcrypt.service')();
+const vars = require("../config/vars");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -19,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'userToken',
       }),
       User.belongsToMany(models.Employee, {
+        through: 'EmployeeUser',
         foreignKey: 'user_id',
         as: 'employees',
       })
@@ -58,5 +63,15 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+  User.beforeSave(async (user) => {
+    if (user.password) {
+      user.password = await hashService.hash(user.password, vars.saltRounds);
+    }
+  });
+  User.prototype.comparePassword = function (passw, cb) {
+    const isPasswordCorrect= hashService.compare(passw, this.password);
+    if(isPasswordCorrect){
+      return cb(null, isPasswordCorrect);
+    }}
   return User;
 };

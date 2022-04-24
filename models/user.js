@@ -14,6 +14,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         as: 'role',
       });
+      User.belongsTo(models.UserToken,{
+        foreignKey: 'token_id',
+        as: 'userToken',
+      }),
+      User.belongsToMany(models.Employee, {
+        foreignKey: 'user_id',
+        as: 'employees',
+      })
     }
   }
   User.init({
@@ -42,6 +50,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     lastlogin: {
       type:DataTypes.DATE
+    },
+    profile_img:{
+      type:DataTypes.STRING,
     }
   }, {
     sequelize,

@@ -1,40 +1,46 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Companies', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      role_id: {
-        type: Sequelize.INTEGER
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      name_kana: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      zip_code: {
+        type: Sequelize.STRING
+      },
+      phone: {
+        type: Sequelize.STRING
       },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
       },
-      password: {
+      url_of_hp: {
         type: Sequelize.STRING
       },
-      firstname: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      middlename: {
-        type: Sequelize.STRING
-      },
-      lastname: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      isemailverified: {
-        type: Sequelize.BOOLEAN
-      },
-      lastlogin: {
+      date_of_establishment: {
         type: Sequelize.DATE
+      },
+      remarks: {
+        type: Sequelize.STRING
+      },
+      images_id: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -43,13 +49,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      profile_img: {
-        type: Sequelize.STRING,
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Companies');
   }
 };

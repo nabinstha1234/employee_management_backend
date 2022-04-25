@@ -131,16 +131,28 @@ const companyService = () => {
   const update = async (args = {}) => {
     const operation = 'update';
     const _id = args?._id;
-    const firstName = args?.firstName;
-    const lastName = args?.lastName;
-    const isEmailVerified = args?.isEmailVerified;
+    const email = args?.email;
+      const name = args?.name;
+      const zip_code = args?.zip_code;
+      const name_kana = args?.name_kana;
+      const phone = args?.phone;
+      const url_of_hp = args?.url_of_hp;
+      const date_of_establishment = args?.url_of_establishment;
+      const remarks = args?.remarks;
+      const address = args?.address;
 
     try {
       let updated = await companyRepository.update({
         _id,
-        firstName,
-        lastName,
-        isEmailVerified,
+        email,
+        name,
+        name_kana,
+        zip_code,
+        phone,
+        url_of_hp,
+        date_of_establishment,
+        remarks,
+        address
       });
 
       return updated;

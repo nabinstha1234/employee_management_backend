@@ -30,12 +30,6 @@ const companyController = () => {
 
     try {
       const _id = req.params._id;
-      if (Number(_id) !== Number(req?.user?._id)) {
-        return res.status(403).send({
-          message: strings.forbidden,
-          data: { _id },
-        });
-      }
 
       let user = await companyService.getById({ _id });
       if (!user) {
@@ -117,28 +111,37 @@ const companyController = () => {
       const _id = req.params._id;
       const args = req.body;
 
-      const firstName = args?.firstName;
-      const lastName = args?.lastName;
-      if (_id !== req?.user?._id && req?.user?.role !== vars.roles.admin) {
-        return res.status(403).send({
-          message: strings.forbidden,
-          data: { _id },
-        });
-      }
+      const email = args?.email;
+      const name = args?.name;
+      const zip_code = args?.zip_code;
+      const name_kana = args?.name_kana;
+      const phone = args?.phone;
+      const url_of_hp = args?.url_of_hp;
+      const date_of_establishment = args?.url_of_establishment;
+      const remarks = args?.remarks;
+      const address = args?.address;
 
-      const schema = userValidation.update;
-      await joiService.validate({
-        schema,
-        input: {
-          firstName,
-          lastName,
-        },
-      });
+
+    //   const schema = userValidation.update;
+    //   await joiService.validate({
+    //     schema,
+    //     input: {
+    //       firstName,
+    //       lastName,
+    //     },
+    //   });
 
       let user = await companyService.update({
         _id,
-        firstName,
-        lastName,
+        email,
+        name,
+        name_kana,
+        zip_code,
+        phone,
+        url_of_hp,
+        date_of_establishment,
+        remarks,
+        address
       });
 
       return res.status(200).send({
@@ -156,17 +159,7 @@ const companyController = () => {
 
     try {
       const _id = req.params._id;
-      const data = req.body;
-
-      if (_id === req?.user?._id) {
-        return res.status(403).send({
-          message: strings.cannotDeleteOwnAccount,
-          data: {
-            _id,
-          },
-        });
-      }
-
+      
       const user = await companyService.deleteById({ _id });
       if (!user) {
         return res.status(404).send({

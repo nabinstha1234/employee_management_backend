@@ -145,7 +145,6 @@ const companyRepository = () => {
   const create = async (user) => {
     const operation = 'create';
     try {
-      let username = user?.username;
       const email = user?.email;
       const name = user?.name;
       const zip_code = user?.zip_code;
@@ -231,34 +230,19 @@ const companyRepository = () => {
     const operation = 'update';
     try {
       const _id = args?._id;
-      const firstName = args?.firstName;
-      const lastName = args?.lastName;
-      const isEmailVerified = args?.isEmailVerified;
-      let password = args?.password;
+      const email = args?.email;
+      const name = args?.name;
+      const zip_code = args?.zip_code;
+      const name_kana = args?.name_kana;
+      const phone = args?.phone;
+      const url_of_hp = args?.url_of_hp;
+      const date_of_establishment = args?.url_of_establishment;
+      const remarks = args?.remarks;
+      const address = args?.address;
 
       const errors = [];
       if (isNil(_id) || !isString(_id)) {
         errors.push(strings.idRequired);
-      }
-
-      if (!isNil(firstName) && !isString(firstName)) {
-        errors.push(strings.firstNameValidation);
-      }
-
-      if (!isNil(isEmailVerified) && !isBoolean(isEmailVerified)) {
-        errors.push(strings.emailVerifiedInputValidation);
-      }
-
-      if (!isNil(lastName) && !isString(lastName)) {
-        errors.push(strings.lastNameValidation);
-      }
-
-      if (!isNil(password) && !isString(password) && isEmpty(password)) {
-        errors.push(strings.passwordValidation);
-      }
-
-      if (password) {
-        password = await hashService.hash(password, vars.saltRounds);
       }
 
       if (errors.length) {
@@ -268,24 +252,35 @@ const companyRepository = () => {
         });
       }
 
-      const foundUser = await Company.findOne({ _id });
+      const foundCompany = await Company.findOne({where:{
+           id:_id 
+        }});
 
-      if (!foundUser) {
+      if (!foundCompany) {
         throw new NotFoundError({
           message: strings.userNotFound,
           details: [strings.userNotFound],
           data: { _id },
         });
       }
-
-      let data = merge(foundUser, {
-        firstName,
-        lastName,
-        isEmailVerified,
-        password,
+  
+      let data = merge(foundCompany.dataValues, {
+        email,
+        name,
+        name_kana,
+        zip_code,
+        phone,
+        url_of_hp,
+        address,
+        date_of_establishment,
+        remarks,
       });
 
-      const entity = await Company.findOneAndUpdate({ _id }, data, { new: true }).exec();
+      const entity = await Company.update({ ...data},{
+        where:{
+            id:_id
+        }
+      });
 
       return entity;
     } catch (err) {
@@ -322,7 +317,8 @@ const companyRepository = () => {
         });
       }
 
-      return Company.findOneAndRemove({ _id }).exec();
+      return  Company.destroy({
+        where:{id: _id }});
     } catch (err) {
       errorService.throwError({
         err,

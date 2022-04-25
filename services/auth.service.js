@@ -73,7 +73,6 @@ const authService = () => {
       const password = args.password;
 
       const user = await userRepository.findOne({ email, selectPassword: true });
-      console.log(user,"i am users")
       if (!user) {
         throw new ValidationError({
           message: strings.validationError,
@@ -92,8 +91,8 @@ const authService = () => {
       }
 
       const payload = {
-        _id: user._id,
-        role: user.role,
+        _id: user.dataValues.id,
+        role: user.dataValues.role_id,
       };
 
       const token = await jwtService.generateToken({

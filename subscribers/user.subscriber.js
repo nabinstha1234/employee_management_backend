@@ -23,7 +23,7 @@ userEmitter.on(vars.events.onSignUp, async (args = {}) => {
     secretKey: vars.secretKey,
     expiresAt: vars.verificationEmailTokenExpiration,
   });
-  console.log(token, 'askdjf');
+  
 
   logger.info({
     operation,

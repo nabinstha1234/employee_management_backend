@@ -241,6 +241,7 @@ const authController = () => {
       const _id = _req.user?._id;
 
       let user = await userService.getById({ _id });
+      delete user.dataValues.password;
 
       return res.status(200).send({
         message: strings.userListedSuccess,

@@ -40,8 +40,10 @@ module.exports = {
     url: process.env.MONGO_URL || `mongodb://127.0.0.1:27017/boilerplate`,
   },
   roles: {
-    admin: 'admin',
+    admin: 'SuperAdmin',
     user: 'user',
+    adminAuthority:"Admin",
+    generalAuthority:"GeneralAdmin",
   },
   models: {
     User: 'User',

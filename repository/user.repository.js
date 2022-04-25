@@ -58,7 +58,7 @@ const userRepository = () => {
 
     try {
       const errors = [];
-      if (isNil(_id) || !isString(_id)) {
+      if (isNil(_id)) {
         errors.push(strings.idRequired);
       }
 
@@ -69,7 +69,7 @@ const userRepository = () => {
         });
       }
 
-      return User.findById(args?._id);
+      return User.findByPk(args?._id);
     } catch (err) {
       errorService.throwError({
         err,

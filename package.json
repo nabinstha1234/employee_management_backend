@@ -12,10 +12,10 @@
     "test": "jest",
     "docs": "apidoc -i config/apidoc/ -o static/docs/",
     "docs:production": "apidoc -c ./apidoc.prod.json -i config/apidoc/ -o static/docs/",
-    "db:seed": "node ./config/seed/seeder.js",
     "prepare": "husky install",
     "db:create": "sequelize-cli db:create",
-    "db:migrate": "sequelize-cli db:migrate"
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:seed": "sequelize-cli db:seed:all"
   },
   "author": "",
   "license": "ISC",

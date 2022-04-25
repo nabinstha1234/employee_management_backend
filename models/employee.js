@@ -10,18 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Employee.hasOne(models.User, {
-        foreignKey: 'employee_id',
-        as: 'employee',
-      });
-      Employee.hasOne(models.Company, {
-        foreignKey: 'employee_id',
-        as: 'company'
-      });
-      Employee.hasOne(models.ImagesFiles, {
-        foreignKey: 'employee_id',
-        as: 'images'
-      });
+      // Employee.belongsTo(models.Users,{
+      //   foreignKey: 'user_id',
+      // })
+      // Employee.belongsTo(models.Company,{
+      //   foreignKey: 'company_id',
+      // });
+      // Employee.belongsTo(models.Imagesfiles,{
+      //   foreignKey: 'imagesfiles_id',
+      // })
     }
   }
   Employee.init({
@@ -36,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
     birthday: DataTypes.DATE,
     remarks: DataTypes.STRING,
-    profile_image: DataTypes.STRING,
+    imageFiles_id: DataTypes.STRING,
     company_id: DataTypes.STRING,
     user_id: DataTypes.STRING
   }, {

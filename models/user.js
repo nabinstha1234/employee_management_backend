@@ -14,18 +14,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      // User.hasOne(models.Employee)
       User.hasOne(models.Role, {
         foreignKey: 'user_id',
         as: 'role',
       });
-      User.belongsTo(models.UserToken,{
-        foreignKey: 'token_id',
-        as: 'userToken',
-      }),
-      User.belongsToMany(models.Employee, {
-        through: 'EmployeeUser',
+      User.hasOne(models.UserToken,{
         foreignKey: 'user_id',
-        as: 'employees',
       })
     }
   }

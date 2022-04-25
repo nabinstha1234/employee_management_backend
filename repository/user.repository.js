@@ -109,7 +109,6 @@ const userRepository = () => {
     try {
       const selectPassword = args?.selectPassword;
       const _args = omit(args, ['selectPassword']);
-      console.log('_args', _args);
       let user;
       if (args?.selectPassword) {
         user = await User.findOne({

@@ -9,6 +9,7 @@ const hashService = require('../services/bcrypt.service')();
 const emailService = require('../services/email.service')();
 const userTokenService = require('../services/userToken.service')();
 const errorService = require('../services/error.service')();
+const { Role } = require('../models');
 
 const authService = () => {
   const name = 'authService';
@@ -90,9 +91,11 @@ const authService = () => {
         });
       }
 
+      const role_id = user.dataValues.role_id;
+      const role = await Role.findOne({ where: { id: role_id } });
       const payload = {
         _id: user.dataValues.id,
-        role: user.dataValues.role_id,
+        role: role.dataValues.role_name,
       };
 
       const token = await jwtService.generateToken({

@@ -217,6 +217,49 @@ const userService = () => {
     }
   };
 
+  /**
+   * Create
+   * @param {Object} args
+   * @param {string} args.firstName
+   * @param {string} args.lastName
+   * @param {string} args.email
+   * @param {string} args.username
+   * @param {string} args.password
+   * @param {string} args.role
+   * @returns {Promise<User>}
+   */
+  const createNewUser = async (args) => {
+    const operation = 'createNewUser';
+    const email = args?.email;
+    const password = args?.password;
+    const firstname = args?.firstName;
+    const lastname = args?.lastName;
+    const middlename = args?.middlename;
+    const role = args?.role;
+    const company = args?.company;
+
+    try {
+      const user = await userRepository.create({
+        email,
+        firstname,
+        lastname,
+        middlename,
+        company,
+        password,
+        role,
+      });
+
+      return user;
+    } catch (err) {
+      errorService.throwError({
+        err,
+        operation,
+        name,
+        logError: false,
+      });
+    }
+  };
+
   return {
     getAll,
     getById,
@@ -224,6 +267,7 @@ const userService = () => {
     update,
     deleteById,
     changePassword,
+    createNewUser,
   };
 };
 

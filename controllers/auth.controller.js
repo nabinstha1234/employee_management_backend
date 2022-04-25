@@ -240,16 +240,15 @@ const authController = () => {
 
     try {
       const _id = _req.user?._id;
-      const roleId= _req.user?.role;
+      const role = _req.user?.role;
 
       let user = await userService.getById({ _id });
       delete user.dataValues.password;
-      let role= await roleService.getById({ _id: roleId });
 
-      const response={
+      const response = {
         ...user.dataValues,
-        role: role? role.dataValues.role_name:null
-      }
+        role: role,
+      };
 
       return res.status(200).send({
         message: strings.userListedSuccess,

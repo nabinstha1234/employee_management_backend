@@ -208,6 +208,40 @@ const userController = () => {
     }
   };
 
+  const createNewUser = async (req, res, next) => {
+    const operation = 'createUser';
+
+    try {
+      const args = req.body;
+
+      const email = args?.email;
+      const password = args?.password;
+      const firstname = args?.firstName;
+      const lastname = args?.lastName;
+      const middlename = args?.middlename;
+      const role = args?.role;
+      const company = args?.company;
+
+      let user = await userService.createNewUser({
+        email,
+        password,
+        firstname,
+        lastname,
+        middlename,
+        company,
+        role,
+      });
+
+      return res.status(200).send({
+        message: strings.userCreateSuccess,
+        data: user,
+      });
+    } catch (err) {
+      const error = errorService.getError({ err, name, operation, logError: true });
+      next(error);
+    }
+  };
+
   return {
     getUsers,
     getUser,
@@ -215,6 +249,7 @@ const userController = () => {
     updateUser,
     deleteUser,
     changePassword,
+    createNewUser,
   };
 };
 

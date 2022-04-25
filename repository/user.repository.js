@@ -3,11 +3,12 @@ const { isBoolean, merge, isArray, isString, isNil, isEmpty, get, omit } = requi
 const paging = require('../utils/paging');
 const vars = require('../config/vars');
 const strings = require('../config/strings');
-const { User } = require('../models');
+const { User, Role, Employee, Company } = require('../models');
 const { roles } = require('../config/vars');
 const { ValidationError, ConflictError, NotFoundError } = require('../utils/ApiError');
 const hashService = require('../services/bcrypt.service')();
 const errorService = require('../services/error.service')();
+const sgMail = require('@sendgrid/mail');
 
 const userRepository = () => {
   const name = 'userRepository';
@@ -112,10 +113,10 @@ const userRepository = () => {
       let user;
       if (args?.selectPassword) {
         user = await User.findOne({
-          where:{
+          where: {
             email: args?.email,
-          }
-        })
+          },
+        });
       } else {
         user = await User.findOne(_args);
       }
@@ -332,6 +333,130 @@ const userRepository = () => {
     }
   };
 
+  /**
+   * Create new user
+   * @param {Object} args
+   * @param {string=} args.username
+   * @param {string} args.email
+   * @param {string} args.firstName
+   * @param {string} args.lastName
+   * @param {string} args.password
+   * @param {string=} args.role
+   * @returns {Promise<User>}
+   */
+  const createNewUser = async (args) => {
+    const operation = 'create';
+    try {
+      const email = args?.email;
+      const password = args?.password;
+      const firstname = args?.firstName;
+      const lastname = args?.lastName;
+      const middlename = args?.middlename;
+      const role = args?.role;
+      const company = args?.company;
+
+      const errors = [];
+      if (isNil(email) || !isString(email)) {
+        errors.push(strings.emailRequired);
+      }
+
+      if (isNil(firstname) || !isString(firstname)) {
+        errors.push(strings.firstNameValidation);
+      }
+
+      if (isNil(lastname) || !isString(lastname)) {
+        errors.push('Last name is required');
+      }
+
+      if (isNil(role) || !isString(role)) {
+        errors.push('Role is required');
+      }
+
+      if (isNil(company)) {
+        errors.push('Company is required');
+      }
+
+      if (isNil(password) || !isString(password)) {
+        errors.push(strings.passwordValidation);
+      }
+
+      if (errors.length) {
+        throw new ValidationError({
+          message: strings.validationError,
+          details: errors,
+        });
+      }
+
+      let foundUser = await User.findOne({ where: { email } });
+
+      if (foundUser) {
+        throw new ConflictError({
+          message: strings.userExists,
+          details: [strings.userExists],
+          data: { email },
+        });
+      }
+
+      const userRole = Role.findOne({ where: { name_name: role } });
+
+      if (!userRole) {
+        throw new NotFoundError({
+          message: 'User role is not found',
+          details: ['User role is not found'],
+          data: { email },
+        });
+      }
+
+      const companyDetails = Company.findOne({ where: { id: company } });
+
+      if (!companyDetails) {
+        throw new NotFoundError({
+          message: 'Company is not found',
+          details: ['Company is not found'],
+          data: { email },
+        });
+      }
+
+      const userDetails = User.create({
+        email,
+        password,
+        firstname,
+        lastname,
+        middlename,
+        role_id: Number(userRole.dataValues.id),
+      });
+
+      Employee.create({
+        user_id: userDetails.dataValues.id,
+        company_id: companyDetails.dataValues.id,
+      });
+
+      sgMail.setApiKey(vars.sendGridToken);
+      const maessage = {
+        to: email,
+        from: vars.mailSender,
+        subject: 'Your account has been created',
+        text: 'You have been successfully registered',
+        html: `<div>
+        You have been successfully registered
+        <div>email:${email} </div>
+        <div>password:${password} </div>
+        </div>`,
+      };
+
+      sgMail.send(maessage);
+
+      return userDetails;
+    } catch (err) {
+      errorService.throwError({
+        err,
+        operation,
+        name,
+        logError: false,
+      });
+    }
+  };
+
   return {
     getAllAndCount,
     getById,
@@ -340,6 +465,7 @@ const userRepository = () => {
     create,
     update,
     deleteById,
+    createNewUser,
   };
 };
 

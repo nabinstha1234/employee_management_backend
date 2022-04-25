@@ -22,6 +22,8 @@ module.exports = {
   authTokenExpiration: process.env.AUTH_TOKEN_EXPIRATION || '10s',
   refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION || '7d',
   forgotPasswordTokenExpiration: process.env.FORGOT_PASSWORD_TOKEN_EXPIRATION || '1hr',
+  sendGridToken: process.env.SENDGRID_API_KEY,
+  mailSender: process.env.SENDER_EMAIL,
   tokenType: {
     refresh: 'refresh',
   },
@@ -29,7 +31,7 @@ module.exports = {
     english: 'en',
     japanese: 'jp',
   },
-  db:{
+  db: {
     host: process.env.DB_HOST,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
@@ -42,8 +44,8 @@ module.exports = {
   roles: {
     admin: 'SuperAdmin',
     user: 'user',
-    adminAuthority:"Admin",
-    generalAuthority:"GeneralAdmin",
+    adminAuthority: 'Admin',
+    generalAuthority: 'GeneralAdmin',
   },
   models: {
     User: 'User',

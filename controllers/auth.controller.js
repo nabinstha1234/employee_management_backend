@@ -6,6 +6,7 @@ const authService = require('../services/auth.service')();
 const userService = require('../services/user.service')();
 const joiService = require('../services/joi.service')();
 const authValidation = require('../validation/auth.validation');
+const roleService = require('../services/role.service')();
 const errorService = require('../services/error.service')();
 
 const authController = () => {
@@ -239,13 +240,20 @@ const authController = () => {
 
     try {
       const _id = _req.user?._id;
+      const roleId= _req.user?.role;
 
       let user = await userService.getById({ _id });
       delete user.dataValues.password;
+      let role= await roleService.getById({ _id: roleId });
+
+      const response={
+        ...user.dataValues,
+        role: role? role.dataValues.role_name:null
+      }
 
       return res.status(200).send({
         message: strings.userListedSuccess,
-        data: user,
+        data: response,
       });
     } catch (err) {
       const error = errorService.getError({ err, name, operation, logError: true });

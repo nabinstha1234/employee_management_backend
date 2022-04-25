@@ -15,13 +15,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // User.hasOne(models.Employee)
-      User.hasOne(models.Role, {
-        foreignKey: 'user_id',
-        as: 'role',
-      });
-      User.hasOne(models.UserToken,{
-        foreignKey: 'user_id',
-      })
+      // User.hasOne(models.Role, {
+      //   foreignKey: 'user_id',
+      //   as: 'role',
+      // });
+      // User.hasOne(models.UserToken,{
+      //   foreignKey: 'user_id',
+      // })
     }
   }
   User.init({

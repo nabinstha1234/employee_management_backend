@@ -40,4 +40,6 @@ module.exports = {
   roleValidation: 'Role must be non empty string',
   passwordNotMatch: 'Password does not match.',
   changePasswordSuccessful: 'Password changed.',
+  companyNameRequired:"Company name is required",
+  companyEmailExists:"Company email already exists",
 };

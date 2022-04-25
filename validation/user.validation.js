@@ -58,6 +58,7 @@ const changePassword = Joi.object({
   password: Joi.string().required().messages(messages.password),
 });
 
+
 module.exports = {
   create,
   update,

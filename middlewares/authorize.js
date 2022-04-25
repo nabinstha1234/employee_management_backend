@@ -2,6 +2,11 @@ const { ForbiddenError } = require('../utils/ApiError');
 const strings = require('../config/strings');
 
 const logger = require('../utils/winstonLogger')('authorize');
+const Helper = require("../utils/premissionCheck");
+
+const {Role} = require("../models")
+
+const helper = new Helper();
 
 /**
  * ACL
@@ -18,7 +23,13 @@ module.exports = (roles) => {
    * @param {NextFunction} next Next function
    */
   return (req, res, next) => {
-    if (roles.length && roles.includes(req.user.role)) {
+    const role = req.user.role;
+    const roleResponse = Role.findOne({
+      where:{
+        role_id:role
+      }
+    })
+    if (roleResponse && roles.length && roles.includes(req.user.role)) {
       next();
     } else {
       const error = new ForbiddenError({

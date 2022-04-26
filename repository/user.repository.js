@@ -9,6 +9,7 @@ const { ValidationError, ConflictError, NotFoundError } = require('../utils/ApiE
 const hashService = require('../services/bcrypt.service')();
 const errorService = require('../services/error.service')();
 const sgMail = require('@sendgrid/mail');
+const { response } = require('express');
 
 const userRepository = () => {
   const name = 'userRepository';
@@ -429,7 +430,7 @@ const userRepository = () => {
       await Employee.create({
         user_id: userDetails.dataValues.id,
         company_id: companyDetails.dataValues.id,
-        emp_number: 34563,
+        emp_number: Math.floor(Math.random() * 100000001),
       });
 
       await sgMail.setApiKey(vars.sendGridToken);
@@ -446,7 +447,9 @@ const userRepository = () => {
         </div>`,
       };
 
-      await sgMail.send(maessage);
+      sgMail.send(maessage).then((response) => {
+        console.log(response);
+      });
 
       delete userDetails.password;
       return userDetails;

@@ -2,18 +2,18 @@ const vars = require('../config/vars');
 const strings = require('../config/strings');
 const { AppError } = require('../utils/ApiError');
 const userValidation = require('../validation/user.validation');
-const userService = require('../services/user.service')();
+const employeeService = require('../services/employee.service')();
 const errorService = require('../services/error.service')();
 const joiService = require('../services/joi.service')();
 
-const userController = () => {
-  const name = 'userController';
+const employeeController = () => {
+  const name = 'empliyeeController';
 
-  const getUsers = async (req, res, next) => {
-    const operation = 'getUsers';
+  const getEmployees = async (req, res, next) => {
+    const operation = 'getEmployees';
 
     try {
-      let result = await userService.getAll(req.query || {});
+      let result = await employeeService.getAll(req.query || {});
 
       return res.status(200).send({
         message: strings.userListedSuccess,
@@ -25,8 +25,8 @@ const userController = () => {
     }
   };
 
-  const getUser = async (req, res, next) => {
-    const operation = 'getUser';
+  const getEmployee = async (req, res, next) => {
+    const operation = 'getEmployee';
 
     try {
       const _id = req.params._id;
@@ -38,7 +38,7 @@ const userController = () => {
         });
       }
 
-      let user = await userService.getById({ _id });
+      let user = await employeeService.getById({ _id });
       if (!user) {
         return res.status(404).send({
           message: strings.userNotFound,
@@ -56,8 +56,8 @@ const userController = () => {
     }
   };
 
-  const createUser = async (req, res, next) => {
-    const operation = 'createUser';
+  const createEmployee = async (req, res, next) => {
+    const operation = 'createEmployee';
 
     try {
       const _id = req.params._id;
@@ -81,7 +81,7 @@ const userController = () => {
         },
       });
 
-      let user = await userService.create({
+      let user = await employeeService.create({
         email,
         password,
         firstName,
@@ -99,8 +99,8 @@ const userController = () => {
     }
   };
 
-  const updateUser = async (req, res, next) => {
-    const operation = 'updateUser';
+  const updateEmployee = async (req, res, next) => {
+    const operation = 'updateEmployee';
 
     try {
       const _id = req.params._id;
@@ -124,7 +124,7 @@ const userController = () => {
         },
       });
 
-      let user = await userService.update({
+      let user = await employeeService.update({
         _id,
         firstName,
         lastName,
@@ -140,8 +140,8 @@ const userController = () => {
     }
   };
 
-  const deleteUser = async (req, res, next) => {
-    const operation = 'deleteUser';
+  const deleteEmployee = async (req, res, next) => {
+    const operation = 'deleteEmployee';
 
     try {
       const _id = req.params._id;
@@ -156,7 +156,7 @@ const userController = () => {
         });
       }
 
-      const user = await userService.deleteById({ _id });
+      const user = await employeeService.deleteById({ _id });
       if (!user) {
         return res.status(404).send({
           message: strings.userNotFound,
@@ -174,83 +174,13 @@ const userController = () => {
     }
   };
 
-  const changePassword = async (req, res, next) => {
-    const operation = 'changePassword';
-
-    try {
-      const data = req.body;
-      const _id = req?.user?._id;
-      const password = data?.password;
-      const oldPassword = data?.oldPassword;
-
-      const schema = userValidation.changePassword;
-      await joiService.validate({
-        schema,
-        input: {
-          oldPassword,
-          password,
-        },
-      });
-
-      const updated = await userService.changePassword({
-        _id,
-        oldPassword,
-        password,
-      });
-
-      return res.status(200).send({
-        message: strings.changePasswordSuccessful,
-        data: updated,
-      });
-    } catch (err) {
-      const error = errorService.getError({ err, name, operation, logError: true });
-      next(error);
-    }
-  };
-
-  const createNewUser = async (req, res, next) => {
-    const operation = 'createUser';
-
-    try {
-      const args = req.body;
-
-      const email = args?.email;
-      const password = args?.password;
-      const firstname = args?.firstname;
-      const lastname = args?.lastname;
-      const middlename = args?.middlename;
-      const role = args?.role;
-      const company = args?.company;
-
-      let user = await userService.createNewUser({
-        email,
-        password,
-        firstname,
-        lastname,
-        middlename,
-        company,
-        role,
-      });
-
-      return res.status(200).send({
-        message: strings.userCreateSuccess,
-        data: user,
-      });
-    } catch (err) {
-      const error = errorService.getError({ err, name, operation, logError: true });
-      next(error);
-    }
-  };
-
   return {
-    getUsers,
-    getUser,
-    createUser,
-    updateUser,
-    deleteUser,
-    changePassword,
-    createNewUser,
+    getEmployees,
+    getEmployee,
+    createEmployee,
+    updateEmployee,
+    deleteEmployee,
   };
 };
 
-module.exports = userController;
+module.exports = employeeController;

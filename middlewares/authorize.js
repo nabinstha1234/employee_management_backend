@@ -1,10 +1,11 @@
 const { ForbiddenError } = require('../utils/ApiError');
 const strings = require('../config/strings');
+const vars = require('../config/vars');
 
 const logger = require('../utils/winstonLogger')('authorize');
-const Helper = require("../utils/premissionCheck");
+const Helper = require('../utils/premissionCheck');
 
-const {Role} = require("../models")
+const { Role } = require('../models');
 
 const helper = new Helper();
 
@@ -22,14 +23,14 @@ module.exports = (roles) => {
    * @param {Response} res Response object
    * @param {NextFunction} next Next function
    */
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const role = req.user.role;
-    const roleResponse = Role.findOne({
-      where:{
-        role_id:role
-      }
-    })
-    if (roleResponse && roles.length && roles.includes(req.user.role)) {
+
+    if (req.user.role === vars.roles.admin) {
+      next();
+    }
+
+    if (roles.length && roles.includes(req.user.role)) {
       next();
     } else {
       const error = new ForbiddenError({

@@ -9,8 +9,8 @@ const router = Router();
 
 router.get('/:_id', authenticate, companyController.getCompany);
 router.get('/', authenticate, companyController.getCompanies);
-router.post('/', authenticate, companyController.createCompany);
+router.post('/', authenticate, authorize(roles.admin), companyController.createCompany);
 router.patch('/:_id', authenticate, companyController.updateCompany);
-router.delete('/:_id', authenticate, companyController.deleteComany);
+router.delete('/:_id', authenticate, authorize(roles.admin), companyController.deleteComany);
 
 module.exports = router;

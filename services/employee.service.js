@@ -4,12 +4,12 @@ const vars = require('../config/vars');
 const strings = require('../config/strings');
 const paging = require('../utils/paging');
 const { NotFoundError, ValidationError } = require('../utils/ApiError');
-const userRepository = require('../repository/user.repository')();
+const employeeRepository = require('../repository/employee.repository')();
 const errorService = require('../services/error.service')();
 const hashService = require('../services/bcrypt.service')();
 const logger = require('../utils/winstonLogger')('userService');
 
-const userService = () => {
+const employeeService = () => {
   const name = 'userService';
 
   /**
@@ -26,7 +26,7 @@ const userService = () => {
     const pagingArgs = paging.getPagingArgs(args);
 
     try {
-      let { rows, count } = await userRepository.getAllAndCount(pagingArgs);
+      let { rows, count } = await employeeRepository.getAllAndCount(pagingArgs);
 
       const pagingMeta = paging.getPagingResult(pagingArgs, { total: count });
 
@@ -56,8 +56,8 @@ const userService = () => {
     const operation = 'getById';
     try {
       const _id = args?._id;
-      let user = await userRepository.getById({ _id });
-      return user;
+      let employee = await employeeRepository.getById({ _id });
+      return employee;
     } catch (err) {
       errorService.throwError({
         err,
@@ -89,7 +89,7 @@ const userService = () => {
     const role = args.role;
 
     try {
-      const user = await userRepository.create({
+      const user = await employeeRepository.create({
         email,
         username,
         firstName,
@@ -126,7 +126,7 @@ const userService = () => {
     const isEmailVerified = args?.isEmailVerified;
 
     try {
-      let updated = await userRepository.update({
+      let updated = await employeeRepository.update({
         _id,
         firstName,
         lastName,
@@ -155,101 +155,9 @@ const userService = () => {
     try {
       const _id = args?._id;
 
-      let deletedUser = await userRepository.deleteById({ _id });
+      let deletedEmployee = await employeeRepository.deleteById({ _id });
 
-      return deletedUser;
-    } catch (err) {
-      errorService.throwError({
-        err,
-        operation,
-        name,
-        logError: false,
-      });
-    }
-  };
-
-  /**
-   * Change password
-   * @param {Object} args
-   * @param {string} args.oldPassword
-   * @param {string} args.password - new password
-   * @returns {Promise<boolean>}
-   */
-  const changePassword = async (args) => {
-    const operation = 'changePassword';
-    const _id = args?._id;
-    const oldPassword = args?.oldPassword;
-    const password = args?.password;
-
-    try {
-      const user = await userRepository.findOne({ _id, selectPassword: true });
-
-      if (!user) {
-        throw new ValidationError({
-          message: strings.validationError,
-          details: [strings.badCredentials],
-          data: { _id },
-        });
-      }
-
-      const isPasswordCorrect = await hashService.compare(oldPassword, user.password);
-      if (!isPasswordCorrect) {
-        throw new ValidationError({
-          message: strings.validationError,
-          details: [strings.passwordNotMatch],
-          data: { _id },
-        });
-      }
-
-      await userRepository.update({
-        _id,
-        password,
-      });
-
-      return true;
-    } catch (err) {
-      errorService.throwError({
-        err,
-        operation,
-        name,
-        logError: false,
-      });
-    }
-  };
-
-  /**
-   * Create
-   * @param {Object} args
-   * @param {string} args.firstName
-   * @param {string} args.lastName
-   * @param {string} args.email
-   * @param {string} args.username
-   * @param {string} args.password
-   * @param {string} args.role
-   * @returns {Promise<User>}
-   */
-  const createNewUser = async (args) => {
-    const operation = 'createNewUser';
-    const email = args?.email;
-    const password = args?.password;
-    const firstname = args?.firstname;
-    const lastname = args?.lastname;
-    const middlename = args?.middlename;
-    const role = args?.role;
-    const company = args?.company;
-
-    try {
-      const user = await userRepository.createNewUser({
-        email,
-        firstname,
-        lastname,
-        middlename,
-        company,
-        password,
-        role,
-      });
-
-      return user;
+      return deletedEmployee;
     } catch (err) {
       errorService.throwError({
         err,
@@ -266,9 +174,7 @@ const userService = () => {
     create,
     update,
     deleteById,
-    changePassword,
-    createNewUser,
   };
 };
 
-module.exports = userService;
+module.exports = employeeService;

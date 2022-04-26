@@ -4,6 +4,7 @@ const userTokenRouter = require('./token.route');
 const authRouter = require('./auth.route');
 const userRouter = require('./user.route');
 const companyRouter = require('./company.route');
+const employeeRouter = require('./employee.route');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/', (_, res) => {
 app.use('/token', userTokenRouter);
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
-app.use('/company',companyRouter)
+app.use('/company', companyRouter);
+app.use('/employee', employeeRouter);
 
 module.exports = app;

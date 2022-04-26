@@ -53,7 +53,7 @@ const companyService = () => {
    */
   const getById = async (args = {}) => {
     const operation = 'getById';
-    console.log(args,"i am args");
+
     try {
       const _id = args?._id;
       let user = await companyRepository.getById({ _id });
@@ -80,7 +80,7 @@ const companyService = () => {
    * @param {string} args.date_of_establishment
    * @param {string} args.remarks
    * @param {string} args.address
-   * 
+   *
    * @returns {Promise<User>}
    */
   const create = async (args) => {
@@ -132,14 +132,14 @@ const companyService = () => {
     const operation = 'update';
     const _id = args?._id;
     const email = args?.email;
-      const name = args?.name;
-      const zip_code = args?.zip_code;
-      const name_kana = args?.name_kana;
-      const phone = args?.phone;
-      const url_of_hp = args?.url_of_hp;
-      const date_of_establishment = args?.url_of_establishment;
-      const remarks = args?.remarks;
-      const address = args?.address;
+    const name = args?.name;
+    const zip_code = args?.zip_code;
+    const name_kana = args?.name_kana;
+    const phone = args?.phone;
+    const url_of_hp = args?.url_of_hp;
+    const date_of_establishment = args?.url_of_establishment;
+    const remarks = args?.remarks;
+    const address = args?.address;
 
     try {
       let updated = await companyRepository.update({
@@ -152,7 +152,7 @@ const companyService = () => {
         url_of_hp,
         date_of_establishment,
         remarks,
-        address
+        address,
       });
 
       return updated;
@@ -189,8 +189,6 @@ const companyService = () => {
       });
     }
   };
-
-  
 
   return {
     getAll,

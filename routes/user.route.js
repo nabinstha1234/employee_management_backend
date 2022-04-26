@@ -8,8 +8,8 @@ const authorize = require('../middlewares/authorize');
 const router = Router();
 
 router.get('/:_id', authenticate, userController.getUser);
-router.get('/', authenticate, authorize(roles.admin), userController.getUsers);
-router.post('/', authenticate, authorize(roles.admin), userController.createUser);
+router.get('/', authenticate, userController.getUsers);
+router.post('/', authenticate, userController.createUser);
 router.put('/change-password', authenticate, userController.changePassword);
 router.put('/:_id', authenticate, userController.updateUser);
 router.delete('/:_id', authenticate, authorize(roles.admin), userController.deleteUser);

@@ -28,9 +28,9 @@ const userRepository = () => {
     const { skip, limit, sort, query } = args;
 
     try {
-      const data = await User.find(query).skip(skip).limit(limit).sort(sort);
+      const data = await User.findAll(query);
 
-      const total = await User.countDocuments(query);
+      const total = await User.count();
 
       return {
         count: total,
@@ -353,7 +353,7 @@ const userRepository = () => {
       const lastname = args?.lastname;
       const middlename = args?.middlename;
       const role = args?.role;
-      const company = args?.company;
+      const company = Number(args?.company);
 
       const errors = [];
       if (isNil(email) || !isString(email)) {

@@ -27,7 +27,7 @@ const companyRepository = () => {
     const { skip, limit, sort, query } = args;
 
     try {
-      const data = await Company.findOne(query);
+      const data = await Company.findAll(query);
 
       const total = await Company.count();
 
@@ -112,10 +112,10 @@ const companyRepository = () => {
       let user;
       if (args?.selectPassword) {
         user = await Company.findOne({
-          where:{
+          where: {
             email: args?.email,
-          }
-        })
+          },
+        });
       } else {
         user = await Company.findOne(_args);
       }
@@ -171,7 +171,7 @@ const companyRepository = () => {
         });
       }
 
-      let foundCompany = await Company.findOne({where: {email} });
+      let foundCompany = await Company.findOne({ where: { email } });
 
       if (foundCompany) {
         throw new ConflictError({
@@ -181,18 +181,18 @@ const companyRepository = () => {
         });
       }
 
-    //   if (username) {
-    //     let foundUser = await Company.findOne({ username });
-    //     if (foundUser) {
-    //       throw new ConflictError({
-    //         message: strings.userExists,
-    //         details: [strings.userExists],
-    //         data: { email },
-    //       });
-    //     }
-    //   } else {
-    //     username = email.split('@')?.[0];
-    //   }
+      //   if (username) {
+      //     let foundUser = await Company.findOne({ username });
+      //     if (foundUser) {
+      //       throw new ConflictError({
+      //         message: strings.userExists,
+      //         details: [strings.userExists],
+      //         data: { email },
+      //       });
+      //     }
+      //   } else {
+      //     username = email.split('@')?.[0];
+      //   }
 
       const entity = await Company.create({
         email,
@@ -203,7 +203,7 @@ const companyRepository = () => {
         url_of_hp,
         date_of_establishment,
         remarks,
-        address
+        address,
       });
 
       return entity;
@@ -252,9 +252,11 @@ const companyRepository = () => {
         });
       }
 
-      const foundCompany = await Company.findOne({where:{
-           id:_id 
-        }});
+      const foundCompany = await Company.findOne({
+        where: {
+          id: _id,
+        },
+      });
 
       if (!foundCompany) {
         throw new NotFoundError({
@@ -263,7 +265,7 @@ const companyRepository = () => {
           data: { _id },
         });
       }
-  
+
       let data = merge(foundCompany.dataValues, {
         email,
         name,
@@ -276,11 +278,14 @@ const companyRepository = () => {
         remarks,
       });
 
-      const entity = await Company.update({ ...data},{
-        where:{
-            id:_id
+      const entity = await Company.update(
+        { ...data },
+        {
+          where: {
+            id: _id,
+          },
         }
-      });
+      );
 
       return entity;
     } catch (err) {
@@ -317,8 +322,9 @@ const companyRepository = () => {
         });
       }
 
-      return  Company.destroy({
-        where:{id: _id }});
+      return Company.destroy({
+        where: { id: _id },
+      });
     } catch (err) {
       errorService.throwError({
         err,

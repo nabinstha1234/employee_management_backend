@@ -5,6 +5,7 @@ const userValidation = require('../validation/user.validation');
 const userService = require('../services/user.service')();
 const errorService = require('../services/error.service')();
 const joiService = require('../services/joi.service')();
+var generator = require('generate-password');
 
 const userController = () => {
   const name = 'userController';
@@ -215,7 +216,10 @@ const userController = () => {
       const args = req.body;
 
       const email = args?.email;
-      const password = args?.password;
+      const password = generator.generate({
+        length: 10,
+        numbers: true,
+      });
       const firstname = args?.firstname;
       const lastname = args?.lastname;
       const middlename = args?.middlename;

@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Company extends Model {
     /**
@@ -10,45 +8,57 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Company.belongsToMany(models.ImagesFiles, {
-      //   through: 'images',
-      // })
-      // Company.belongsToMany(models.Employee,{
-      //   through:"companyEmployee"
-      // })
-      // Company.hasMany(models.Company)
+      Company.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        targetKey: 'id',
+      });
     }
   }
-  Company.init({
-    name: {
-      type:DataTypes.STRING,
-      allowNull:false,
+  Company.init(
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      name_kana: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      zip_code: {
+        type: DataTypes.STRING,
+      },
+      phone: {
+        type: DataTypes.STRING,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: {
+          args: false,
+          msg: 'Please enter your email address',
+        },
+        unique: {
+          args: true,
+          msg: 'Email already exists',
+        },
+        validate: {
+          isEmail: {
+            args: true,
+            msg: 'Please enter a valid email address',
+          },
+        },
+      },
+      url_of_hp: DataTypes.STRING,
+      date_of_establishment: DataTypes.DATE,
+      remarks: DataTypes.STRING,
     },
-    name_kana:{
-      type:DataTypes.STRING,
-      allowNull:false,
-    },
-    address: {
-      type:DataTypes.STRING,
-      allowNull:false,
-    },
-    zip_code:{
-      type:DataTypes.STRING
-    },
-    phone: {
-      type:DataTypes.STRING
-    },
-    email: {
-      type:DataTypes.STRING,
-      allowNull:false
-    },
-    url_of_hp: DataTypes.STRING,
-    date_of_establishment: DataTypes.DATE,
-    remarks: DataTypes.STRING,
-    images_id: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Company',
-  });
+    {
+      sequelize,
+      modelName: 'Company',
+    }
+  );
   return Company;
 };

@@ -6,28 +6,35 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      token: {
-        type: Sequelize.STRING
-      },
-      token_type: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
       },
       user_id: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
+      name: {
+        type: Sequelize.STRING,
+      },
+      token: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      last_used_at: {
+        type: Sequelize.DATE,
+      },
+      last_ip_address: Sequelize.STRING,
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('UserTokens');
-  }
+  },
 };

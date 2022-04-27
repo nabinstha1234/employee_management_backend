@@ -1,10 +1,8 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-// const bcrypt = require('bcryptjs'); 
+const { Model } = require('sequelize');
+// const bcrypt = require('bcryptjs');
 const hashService = require('../services/bcrypt.service')();
-const vars = require("../config/vars");
+const vars = require('../config/vars');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -14,59 +12,106 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // User.hasOne(models.Employee)
-      // User.hasOne(models.Role, {
-      //   foreignKey: 'user_id',
-      //   as: 'role',
-      // });
-      // User.hasOne(models.UserToken,{
-      //   foreignKey: 'user_id',
-      // })
+      User.hasOne(models.Company, {
+        foreignKey: 'user_id',
+        targetKey: 'id',
+      });
     }
   }
-  User.init({
-    role_id: DataTypes.INTEGER,
-    email:{ 
-      type:DataTypes.STRING,
-      allowNull:false,
-      unique:true
-    },
-    password: DataTypes.STRING,
-    firstname: {
-      type:DataTypes.STRING,
-      allowNull:false
-    },
-    middlename:{
-       type:DataTypes.STRING,
-       allowNull:true
+  User.init(
+    {
+      name: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        allowNull: {
+          args: false,
+          msg: 'Please enter your email address',
+        },
+        unique: {
+          args: true,
+          msg: 'Email already exists',
+        },
+        validate: {
+          isEmail: {
+            args: true,
+            msg: 'Please enter a valid email address',
+          },
+        },
       },
-    lastname: {
-      type:DataTypes.STRING,
-      allowNull:false
+      phone: {
+        type: DataTypes.STRING,
+        allowNull: {
+          args: false,
+          msg: 'Please enter your phone number',
+        },
+        unique: {
+          args: true,
+          msg: 'Phone number already exists',
+        },
+      },
+      status: {
+        type: DataTypes.ENUM('inactive', 'active', 'suspended'),
+        defaultValue: 'active',
+      },
+      password: DataTypes.STRING,
+      lastlogin: {
+        type: DataTypes.DATE,
+      },
+      settings: DataTypes.JSON,
+      company_id: DataTypes.STRING,
+      emp_number: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
+      },
+      department: DataTypes.STRING,
+      zip_code: DataTypes.STRING,
+      address: DataTypes.STRING,
+      birthday: DataTypes.DATE,
+      remarks: DataTypes.STRING,
     },
-    isemailverified:{
-      type: DataTypes.BOOLEAN,
-      default: false
-    },
-    lastlogin: {
-      type:DataTypes.DATE
-    },
-    profile_img:{
-      type:DataTypes.STRING,
+    {
+      sequelize,
+      modelName: 'User',
     }
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
-  User.beforeSave(async (user) => {
-    if (user.password) {
-      user.password = await hashService.hash(user.password, vars.saltRounds);
+  );
+
+  User.prototype.hasRole = async function hasRole(role) {
+    if (!role || role === 'undefined') {
+      return false;
     }
-  });
-  User.prototype.comparePassword = function (passw, cb) {
-    const isPasswordCorrect= hashService.compare(passw, this.password);
-    if(isPasswordCorrect){
-      return cb(null, isPasswordCorrect);
-    }}
+    const roles = await this.getRoles();
+    return !!roles.map(({ name }) => name).includes(role);
+  };
+
+  User.prototype.hasPermission = async function hasPermission(permission) {
+    if (!permission || permission === 'undefined') {
+      return false;
+    }
+    const permissions = await this.getPermissions();
+    return !!permissions.map(({ name }) => name).includes(permission.name);
+  };
+
+  User.prototype.hasPermissionThroughRole = async function hasPermissionThroughRole(permission) {
+    if (!permission || permission === 'undefined') {
+      return false;
+    }
+    const roles = await this.getRoles();
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const item of permission.roles) {
+      if (roles.filter((role) => role.name === item.name).length > 0) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  User.prototype.hasPermissionTo = async function hasPermissionTo(permission) {
+    if (!permission || permission === 'undefined') {
+      return false;
+    }
+    return (await this.hasPermissionThroughRole(permission)) || this.hasPermission(permission);
+  };
+
   return User;
 };

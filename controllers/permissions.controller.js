@@ -13,9 +13,7 @@ const permissionController = () => {
 
     try {
       const _id = req.user._id;
-      console.log(_id, 'i am res');
       let result = [];
-      //   let result = await employeeService.getAll(req.query || {});
 
       return res.status(200).send({
         message: strings.userListedSuccess,

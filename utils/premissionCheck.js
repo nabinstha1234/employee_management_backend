@@ -3,7 +3,6 @@ const Permission = require('../models').Permission;
 
 class Helper {
   constructor() {}
-
   checkPermission(roleId, permName) {
     return new Promise((resolve, reject) => {
       Permission.findOne({

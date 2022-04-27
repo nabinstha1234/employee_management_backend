@@ -13,7 +13,8 @@ const employeeController = () => {
     const operation = 'getEmployees';
 
     try {
-      let result = await employeeService.getAll(req.query || {});
+      const user = req.user;
+      let result = await employeeService.getAll(req.query || {}, user);
 
       return res.status(200).send({
         message: strings.userListedSuccess,

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { roles } = require('../config/vars');
+const { permissions } = require('../config/vars');
 const employeeController = require('../controllers/employee.controller')();
 const authenticate = require('../middlewares/authenticate');
 const authorize = require('../middlewares/authorize');

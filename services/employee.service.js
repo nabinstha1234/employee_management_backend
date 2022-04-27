@@ -21,12 +21,12 @@ const employeeService = () => {
    * @param {string} args.sort
    * @returns {Promise<{ paging: Object, results: User[] }>}
    */
-  const getAll = async (args = {}) => {
+  const getAll = async (args = {}, user) => {
     const operation = 'getAll';
     const pagingArgs = paging.getPagingArgs(args);
 
     try {
-      let { rows, count } = await employeeRepository.getAllAndCount(pagingArgs);
+      let { rows, count } = await employeeRepository.getAllAndCount(pagingArgs, user);
 
       const pagingMeta = paging.getPagingResult(pagingArgs, { total: count });
 

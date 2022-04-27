@@ -208,7 +208,7 @@ const userService = () => {
 
       const hashedPassword = await hashService.hash(password);
 
-      await User.update({ password: hashedPassword }, { where: { id: _id } });
+      await User.update({ password: hashedPassword, isemailverified: true }, { where: { id: _id } });
 
       return true;
     } catch (err) {

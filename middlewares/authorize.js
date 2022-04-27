@@ -13,11 +13,7 @@ const helper = new Helper();
  * ACL
  * @param {Array|string} roles User roles to access resource
  */
-module.exports = (roles) => {
-  if (typeof roles === 'string') {
-    roles = [roles];
-  }
-
+module.exports = (permission) => {
   /**
    * @param {Request} req Request object
    * @param {Response} res Response object
@@ -26,11 +22,11 @@ module.exports = (roles) => {
   return async (req, res, next) => {
     const role = req.user.role;
 
-    if (req.user.role === vars.roles.admin) {
+    if (role === vars.roles.admin) {
       next();
     }
 
-    if (roles.length && roles.includes(req.user.role)) {
+    if (permission) {
       next();
     } else {
       const error = new ForbiddenError({

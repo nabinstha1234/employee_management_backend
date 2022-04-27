@@ -22,13 +22,27 @@ const companyRepository = () => {
    * @param {string} args.sort
    * @returns {Promise<{ count: number, rows: User[] }>}
    */
-  const getAllAndCount = async (args = {}) => {
+  const getAllAndCount = async (args = {}, user) => {
     const operation = 'getAllAndCount';
 
     const { skip, limit, sort, query } = args;
 
     try {
-      const data = await Employee.findAll(query);
+      let data = null;
+      if (user.role === vars.roles.admin) {
+        data = await Employee.findAll(query);
+      } else {
+        const employee = await Employee.findOne({
+          where: {
+            user_id: user._id.toString(),
+          },
+        });
+        data = await Employee.findAll({
+          where: {
+            company_id: employee.dataValues.company_id,
+          },
+        });
+      }
 
       const total = await Employee.count();
 

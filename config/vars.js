@@ -70,4 +70,24 @@ module.exports = {
   events: {
     onSignUp: 'onSignUp',
   },
+  permissions: {
+    employee: {
+      CAN_CREATE_EMPLOYEE: 'create-employee',
+      CAN_UPDATE_EMPLOYEE: 'edit-employee',
+      CAN_DELETE_EMPLOYEE: 'delete-employee',
+      CAN_VIEW_EMPLOYEE: 'view-employee',
+    },
+    user: {
+      CAN_CREATE_USER: 'create-user',
+      CAN_UPDATE_USER: 'edit-user',
+      CAN_DELETE_USER: 'delete-user',
+      CAN_VIEW_USER: 'view-user',
+    },
+    company: {
+      CAN_CREATE_COMPANY: 'create-company',
+      CAN_UPDATE_COMPANY: 'edit-company',
+      CAN_DELETE_COMPANY: 'delete-company',
+      CAN_VIEW_COMPANY: 'view-company',
+    },
+  },
 };

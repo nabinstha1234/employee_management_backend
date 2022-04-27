@@ -27,10 +27,11 @@ const userTokenRepository = () => {
       const user = args?.user;
       const expiresIn = args?.expiresIn;
 
+      console.log(user, 'i am user');
+
       const newUserToken = new UserToken({
         token,
-        tokenType,
-        user,
+        user_id: user,
         expiresIn,
       });
 

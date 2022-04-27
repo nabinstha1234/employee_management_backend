@@ -9,7 +9,7 @@ const hashService = require('../services/bcrypt.service')();
 const emailService = require('../services/email.service')();
 const userTokenService = require('../services/userToken.service')();
 const errorService = require('../services/error.service')();
-const { Role } = require('../models');
+const { Role, UserRole } = require('../models');
 
 const authService = () => {
   const name = 'authService';
@@ -91,8 +91,9 @@ const authService = () => {
         });
       }
 
-      const role_id = user.dataValues.role_id;
-      const role = await Role.findOne({ where: { id: role_id } });
+      const userRole = await UserRole.findOne({ where: { user_id: user.dataValues.id } });
+      const role = await Role.findOne({ where: { id: userRole.dataValues.role_id } });
+
       const payload = {
         _id: user.dataValues.id,
         role: role.dataValues.role_name,
@@ -108,12 +109,12 @@ const authService = () => {
         payload,
         expiresIn: vars.refreshTokenExpiration,
         secretKey: vars.refreshTokenKey,
-        user: user._id,
+        user: user.dataValues.id,
         tokenType: vars.tokenType.refresh,
       });
 
       return {
-        _id: user._id,
+        _id: user.dataValues.id,
         token,
         role: user.role,
         refreshToken: refreshToken.token,

@@ -46,6 +46,11 @@ module.exports = {
       birthday: {
         type: Sequelize.DATE,
       },
+      status: {
+        type: Sequelize.ENUM,
+        values: ['inactive', 'active', 'suspended'],
+        defaultValue: 'inactive',
+      },
       remarks: {
         type: Sequelize.STRING,
       },

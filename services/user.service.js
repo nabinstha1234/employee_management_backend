@@ -206,8 +206,6 @@ const userService = () => {
         });
       }
 
-      console.log(isPasswordCorrect, password, oldPassword);
-
       const hashedPassword = await hashService.hash(password);
 
       await User.update({ password: hashedPassword }, { where: { id: _id } });

@@ -8,6 +8,7 @@ const userRepository = require('../repository/user.repository')();
 const errorService = require('../services/error.service')();
 const hashService = require('../services/bcrypt.service')();
 const logger = require('../utils/winstonLogger')('userService');
+const { User } = require('../models');
 
 const userService = () => {
   const name = 'userService';
@@ -182,7 +183,11 @@ const userService = () => {
     const password = args?.password;
 
     try {
-      const user = await userRepository.findOne({ _id, selectPassword: true });
+      const user = await User.findOne({
+        where: {
+          id: _id,
+        },
+      });
 
       if (!user) {
         throw new ValidationError({
@@ -201,10 +206,11 @@ const userService = () => {
         });
       }
 
-      await userRepository.update({
-        _id,
-        password,
-      });
+      console.log(isPasswordCorrect, password, oldPassword);
+
+      const hashedPassword = await hashService.hash(password);
+
+      await User.update({ password: hashedPassword }, { where: { id: _id } });
 
       return true;
     } catch (err) {

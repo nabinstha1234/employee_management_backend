@@ -88,11 +88,12 @@ const userTokenRepository = () => {
    */
   const deleteByToken = (args = {}) => {
     const operation = 'deleteByToken';
+    const token = args?.token;
 
     try {
-      const token = args?.token;
+      // const token = args?.token;
       const errors = [];
-      if (isNil(token) || !isString(token)) {
+      if (isNil(token)) {
         errors.push(strings.tokenRequired);
       }
 
@@ -103,7 +104,7 @@ const userTokenRepository = () => {
         });
       }
 
-      return UserToken.findOneAndRemove({ token }).exec();
+      return UserToken.destroy({ where: { token }, force: true });
     } catch (err) {
       errorService.throwError({
         err,

@@ -222,6 +222,7 @@ const authController = () => {
       const cookie = req?.cookies || {};
 
       const refreshToken = cookie[vars.refreshTokenCookieName];
+      console.log('refreshToken', refreshToken);
       if (refreshToken) {
         return authService.logout(refreshToken);
       }

@@ -177,7 +177,6 @@ const userController = () => {
 
   const changePassword = async (req, res, next) => {
     const operation = 'changePassword';
-
     try {
       const data = req.body;
       const _id = req?.user?._id;

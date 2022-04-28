@@ -219,7 +219,7 @@ const userController = () => {
         length: 10,
         numbers: true,
       });
-      const name = args?.firstname;
+      const name = args?.name;
       const role = args?.role;
       const company = args?.company;
 

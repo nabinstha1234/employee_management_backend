@@ -3,7 +3,7 @@ const { isBoolean, merge, isArray, isString, isNil, isEmpty, get, omit } = requi
 const paging = require('../utils/paging');
 const vars = require('../config/vars');
 const strings = require('../config/strings');
-const { User, Role, Employee, Company, Invite } = require('../models');
+const { User, Role, UserRole, Company, Invite } = require('../models');
 const { roles } = require('../config/vars');
 const { ValidationError, ConflictError, NotFoundError } = require('../utils/ApiError');
 const hashService = require('../services/bcrypt.service')();
@@ -71,7 +71,15 @@ const userRepository = () => {
         });
       }
 
-      return User.findByPk(args?._id);
+      const user = await User.findByPk(args?._id);
+      const role = await UserRole.findOne({ where: { user_id: user.dataValues.id } });
+      const roleValue = await Role.findOne({ where: { id: role.dataValues.role_id } });
+      return {
+        ...user.dataValues,
+        role: {
+          ...roleValue.dataValues,
+        },
+      };
     } catch (err) {
       errorService.throwError({
         err,
@@ -107,7 +115,6 @@ const userRepository = () => {
    */
   const findOne = async (args) => {
     const operation = 'findOne';
-    console.log('_args', args);
     try {
       const selectPassword = args?.selectPassword;
       const _args = omit(args, ['selectPassword']);
@@ -417,6 +424,7 @@ const userRepository = () => {
         email,
         password,
         name,
+        status: 'inactive',
         role_id: Number(userRole.dataValues.id),
       });
 

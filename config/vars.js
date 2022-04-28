@@ -10,7 +10,7 @@ try {
 
 module.exports = {
   origins,
-  originUrl: process.env.ORIGIN,
+  originUrl: process.env.ORIGINS,
   env: process.env.NODE_ENV || 'development',
   port: process.env.PORT,
   baseUrl: process.env.BASE_URL,

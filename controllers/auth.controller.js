@@ -243,16 +243,11 @@ const authController = () => {
       const role = _req.user?.role;
 
       let user = await userService.getById({ _id });
-      delete user.dataValues.password;
-
-      const response = {
-        ...user.dataValues,
-        role: role,
-      };
+      delete user?.password;
 
       return res.status(200).send({
         message: strings.userListedSuccess,
-        data: response,
+        data: user,
       });
     } catch (err) {
       const error = errorService.getError({ err, name, operation, logError: true });

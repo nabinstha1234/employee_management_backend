@@ -18,7 +18,6 @@ module.exports = (permission) => {
    * @param {NextFunction} next Next function
    */
   return async (req, res, next) => {
-    console.log(req.user);
     const access = await Permission.findOne({
       where: { perm_name: permission },
     });

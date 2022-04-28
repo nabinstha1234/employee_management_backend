@@ -26,15 +26,11 @@ const userTokenRepository = () => {
       const tokenType = args?.tokenType;
       const user = args?.user;
       const expiresIn = args?.expiresIn;
-
-      console.log(user, 'i am user');
-
       const newUserToken = new UserToken({
         token,
         user_id: user,
         expiresIn,
       });
-
       const entity = await newUserToken.save();
 
       return entity;

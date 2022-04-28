@@ -3,7 +3,7 @@ const { isBoolean, merge, isArray, isString, isNil, isEmpty, get, omit } = requi
 const paging = require('../utils/paging');
 const vars = require('../config/vars');
 const strings = require('../config/strings');
-const { User, Role, Employee, Company } = require('../models');
+const { User, Role, Employee, Company, Invite } = require('../models');
 const { roles } = require('../config/vars');
 const { ValidationError, ConflictError, NotFoundError } = require('../utils/ApiError');
 const hashService = require('../services/bcrypt.service')();
@@ -351,9 +351,7 @@ const userRepository = () => {
     try {
       const email = args?.email;
       const password = args?.password;
-      const firstname = args?.firstname;
-      const lastname = args?.lastname;
-      const middlename = args?.middlename;
+      const name = args?.name;
       const role = args?.role;
       const company = Number(args?.company);
 
@@ -362,12 +360,8 @@ const userRepository = () => {
         errors.push(strings.emailRequired);
       }
 
-      if (isNil(firstname) || !isString(firstname)) {
-        errors.push(strings.firstNameValidation);
-      }
-
-      if (isNil(lastname) || !isString(lastname)) {
-        errors.push('Last name is required');
+      if (isNil(name) || !isString(name)) {
+        errors.push('Name is required');
       }
 
       if (isNil(role) || !isString(role)) {
@@ -422,16 +416,27 @@ const userRepository = () => {
       const userDetails = await User.create({
         email,
         password,
-        firstname,
-        lastname,
-        middlename,
+        name,
         role_id: Number(userRole.dataValues.id),
       });
 
-      await Employee.create({
+      let invite = await Invite.findOne({
+        where: {
+          email: email,
+        },
+      });
+
+      if (invite) {
+        throw new ConflictError({
+          message: 'Invite already sent',
+          details: ['Invite already sent'],
+          data: { email },
+        });
+      }
+
+      const newInvite = await Invite.create({
+        email: email,
         user_id: userDetails.dataValues.id,
-        company_id: companyDetails.dataValues.id,
-        emp_number: Math.floor(Math.random() * 100000001),
       });
 
       await sgMail.setApiKey(vars.sendGridToken);
@@ -440,12 +445,16 @@ const userRepository = () => {
         to: email,
         from: vars.mailSender,
         subject: 'Your account has been created',
-        text: 'You have been successfully registered',
+        text: `Confirm your invite using the link ${vars.originUrl}/invite/verify/${newInvite.dataValues.token}`,
         html: `<div>
-        You have been successfully registered
-        <div>email:${email} </div>
-        <div>password:${password} </div>
-        </div>`,
+                <p>Email: ${email}</p>
+                <p>Password: ${password}</p>
+                <p>Confirm your invite using the link
+                  <a href="${vars.originUrl}/invite/verify/${newInvite.dataValues.token}" target="_blank">
+                    ${vars.originUrl}/invite/verify/${newInvite.dataValues.token}
+                  </a>
+                </p>
+              </div>`,
       };
 
       sgMail.send(maessage).then((response) => {

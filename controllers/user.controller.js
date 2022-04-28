@@ -219,18 +219,14 @@ const userController = () => {
         length: 10,
         numbers: true,
       });
-      const firstname = args?.firstname;
-      const lastname = args?.lastname;
-      const middlename = args?.middlename;
+      const name = args?.firstname;
       const role = args?.role;
       const company = args?.company;
 
       let user = await userService.createNewUser({
         email,
         password,
-        firstname,
-        lastname,
-        middlename,
+        name,
         company,
         role,
       });

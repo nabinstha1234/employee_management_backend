@@ -6,6 +6,7 @@ const userRouter = require('./user.route');
 const companyRouter = require('./company.route');
 const employeeRouter = require('./employee.route');
 const permissionRouter = require('./permmissions.route');
+const inviteRouter = require('./invite.route');
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use('/users', userRouter);
 app.use('/company', companyRouter);
 app.use('/employee', employeeRouter);
 app.use('/permissions', permissionRouter);
+app.use('/invite', inviteRouter);
 
 module.exports = app;

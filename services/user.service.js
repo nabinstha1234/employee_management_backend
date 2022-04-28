@@ -236,18 +236,14 @@ const userService = () => {
     const operation = 'createNewUser';
     const email = args?.email;
     const password = args?.password;
-    const firstname = args?.firstname;
-    const lastname = args?.lastname;
-    const middlename = args?.middlename;
+    const name = args?.name;
     const role = args?.role;
     const company = args?.company;
 
     try {
       const user = await userRepository.createNewUser({
         email,
-        firstname,
-        lastname,
-        middlename,
+        name,
         company,
         password,
         role,

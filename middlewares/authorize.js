@@ -4,15 +4,13 @@ const vars = require('../config/vars');
 
 const logger = require('../utils/winstonLogger')('authorize');
 const Helper = require('../utils/premissionCheck');
-
-const { Role } = require('../models');
-
+const { Role, Permission, RolePermission, UserPermission } = require('../models');
 const helper = new Helper();
-
 /**
  * ACL
  * @param {Array|string} roles User roles to access resource
  */
+
 module.exports = (permission) => {
   /**
    * @param {Request} req Request object
@@ -20,14 +18,31 @@ module.exports = (permission) => {
    * @param {NextFunction} next Next function
    */
   return async (req, res, next) => {
-    const role = req.user.role;
+    console.log(req.user);
+    const access = await Permission.findOne({
+      where: { perm_name: permission },
+    });
 
-    if (role === vars.roles.admin) {
-      next();
-    }
+    const role = await Role.findOne({
+      where: { role_name: req.user.role },
+    });
 
-    if (permission) {
-      next();
+    const canAccess = await RolePermission.findOne({
+      where: {
+        role_id: role.dataValues.id,
+        permission_id: access.dataValues.id,
+      },
+    });
+
+    const canAccessPermission = await UserPermission.findOne({
+      where: {
+        user_id: req.user._id,
+        permission_id: access.dataValues.id,
+      },
+    });
+
+    if (canAccess || canAccessPermission) {
+      return next();
     } else {
       const error = new ForbiddenError({
         message: strings.forbidden,

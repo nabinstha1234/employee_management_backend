@@ -27,6 +27,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         required: true,
       },
+      temp_password: {
+        type: Sequelize.STRING,
+        required: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

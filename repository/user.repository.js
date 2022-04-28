@@ -72,12 +72,12 @@ const userRepository = () => {
       }
 
       const user = await User.findByPk(args?._id);
-      const role = await UserRole.findOne({ where: { user_id: user.dataValues.id } });
-      const roleValue = await Role.findOne({ where: { id: role.dataValues.role_id } });
+      const role = await UserRole.findOne({ where: { user_id: user?.dataValues?.id } });
+      const roleValue = await Role.findOne({ where: { id: role?.dataValues?.role_id } });
       return {
-        ...user.dataValues,
+        ...user?.dataValues,
         role: {
-          ...roleValue.dataValues,
+          ...roleValue?.dataValues,
         },
       };
     } catch (err) {
@@ -445,6 +445,7 @@ const userRepository = () => {
       const newInvite = await Invite.create({
         email: email,
         user_id: userDetails.dataValues.id,
+        temp_password: password,
       });
 
       await sgMail.setApiKey(vars.sendGridToken);

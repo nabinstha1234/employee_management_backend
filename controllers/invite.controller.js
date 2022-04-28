@@ -26,7 +26,7 @@ const invitationController = () => {
     }
   };
 
-  const createInvitation = async (req, res, next) => {
+  const acceptInvitation = async (req, res, next) => {
     const operation = 'createInvitation';
 
     try {
@@ -42,7 +42,7 @@ const invitationController = () => {
         });
       }
 
-      if (invite.isExpired()) {
+      if (Date.now() > invite?.dataValues.expiry) {
         throw new ConflictError({
           message: 'Invitation expired',
           details: ['Invitation expired'],
@@ -61,7 +61,7 @@ const invitationController = () => {
 
   return {
     getInvitation,
-    createInvitation,
+    acceptInvitation,
   };
 };
 

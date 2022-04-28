@@ -1,14 +1,12 @@
 const { Router } = require('express');
 
 const { roles } = require('../config/vars');
-const userController = require('../controllers/user.controller')();
+const inviteController = require('../controllers/invite.controller')();
 const authenticate = require('../middlewares/authenticate');
 const authorize = require('../middlewares/authorize');
 
 const router = Router();
 
-router.get('/verify/:token', authenticate, userController.getUser);
-router.get('/', authenticate, userController.getUsers);
-router.post('/', authenticate, userController.createUser);
+router.post('/accept/:token', inviteController.acceptInvitation);
 
 module.exports = router;

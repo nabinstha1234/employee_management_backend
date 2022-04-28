@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.NUMBER,
         required: true,
       },
+      temp_password: {
+        type: DataTypes.STRING,
+        required: true,
+      },
     },
     {
       sequelize,
